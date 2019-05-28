@@ -12,8 +12,8 @@ class ContatoForm(forms.Form):
         ('E', 'E-mail'),
     )
     nome = forms.CharField(
-        min_length = 3,
-        max_length = 120
+        min_length=3,
+        max_length=120
     )
     email = forms.EmailField(
         required = False
@@ -25,11 +25,18 @@ class ContatoForm(forms.Form):
         choices = ASSUNTOS
     )
     mensagem = forms.CharField()
-    resposta = forms.MutipleChoiceField(
-        required = False
-        choices = RESPOSTAS
+    resposta = forms.MultipleChoiceField(
+    required = False,
+    choices=RESPOSTAS
     )
 
+    def clean(self):
+        dados = self.cleaned_data
+        respostas = dados["resposta"]
+        email = dados["email"]
+
+        if "E" in respostas and email=="":
+            self.add_error('email', 'e-mail é obrigatório se reposta for incluido')
 
     def enviar_email(self):
         pass
